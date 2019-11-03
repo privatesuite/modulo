@@ -1,0 +1,82 @@
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+#join {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  z-index: 100;
+}
+#left {
+  position: fixed;
+  padding: 20px;
+}
+#left > *:first-child {
+  margin-top: 0;
+}
+#grid {
+  border: 1px solid #c7c7c7;
+  font-size: 0;
+}
+#grid > * {
+  display: block;
+}
+#grid > * > * {
+  position: relative;
+  display: inline-block;
+  min-width: 10px;
+  min-height: 10px;
+  width: 3vw;
+  height: 3vw;
+  max-width: 30px;
+  max-height: 30px;
+}
+#grid > * > *.even {
+  background-color: #c7c7c7;
+}
+#grid > * > * > * {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  user-select: none;
+}
+#grid > * > * > *,
+#grid > * > * > * * {
+  font-size: 1vw;
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  font-weight: 600;
+}
+#grid > * > * > *.type-cm,
+#grid > * > * > *.type-cm * {
+  font-weight: 900;
+  text-decoration: underline;
+}
+#grid > * > * > *.owner-me {
+  background-color: #FA1754;
+}
+#grid > * > * > *.owner-me,
+#grid > * > * > *.owner-me * {
+  color: white;
+}
+#grid > * > * > *.selected {
+  background-color: #a70430;
+}
+#player_list p {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}

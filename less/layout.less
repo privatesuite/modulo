@@ -1,0 +1,142 @@
+* {
+
+	box-sizing: border-box;
+
+}
+
+html, body, #app {
+
+	margin: 0;
+	padding: 0;
+
+	width: 100%;
+	height: 100%;
+
+}
+
+#join {
+
+	position: fixed;
+
+	top: 0;
+	left: 0;
+
+	width: 100%;
+	height: 100%;
+
+	background-color: white;
+
+	z-index: 100;
+
+}
+
+#left {
+
+	position: fixed;
+
+	padding: 20px;
+
+	&>*:first-child {margin-top: 0;}
+
+}
+
+#grid {
+
+	border: 1px solid @light_gray;
+
+	font-size: 0;
+
+	&>* {
+
+		display: block;
+
+		&>* {
+
+			position: relative;
+
+			display: inline-block;
+
+			min-width: 10px;
+			min-height: 10px;
+
+			width: 3vw;
+			height: 3vw;
+
+			max-width: 30px;
+			max-height: 30px;
+
+			&.even {
+
+				background-color: @light_gray;
+	
+			}
+
+			&>* {
+
+				position: absolute;
+
+				display: flex;
+				justify-content: center;
+				align-items: center;
+
+				width: 100%;
+				height: 100%;
+
+				&, * {
+
+					font-size: 1vw;
+					font-family: @sans;
+					font-weight: 600;
+
+				}
+
+				&.type-cm {
+
+					&, * {
+
+						font-weight: 900;
+						text-decoration: underline;
+
+					}
+
+				}
+
+				&.owner-me {
+
+					&, * {
+
+						color: white;
+
+					}
+
+					background-color: @hot_pink;
+
+				}
+
+				&.selected {
+
+					background-color: darken(@hot_pink, 20%);
+
+				}
+
+				cursor: pointer;
+				user-select: none;
+
+			}
+
+		}
+
+	}
+
+}
+
+#player_list {
+
+	& p {
+
+		margin-top: 15px;
+		margin-bottom: 15px;
+
+	}
+
+}
