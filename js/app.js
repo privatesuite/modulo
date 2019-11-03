@@ -292,7 +292,7 @@ document.getElementById("join_room").addEventListener("click", () => {
 
 	if (room.length <= 3 || username.length <= 3) return;
 
-	ws = new WebSocket("ws://privatesuitemag.com:8080", room);
+	ws = new WebSocket("wss://privatesuitemag.com:8080", room);
 
 	document.getElementById("join").remove();
 
