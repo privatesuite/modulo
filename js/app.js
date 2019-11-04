@@ -291,6 +291,7 @@ function updatePlayers () {
 
 	}
 	document.getElementById("game_styles").innerHTML = s;
+	updateTurn();
 
 }
 
@@ -440,5 +441,14 @@ document.getElementById("grid").addEventListener("contextmenu", event => {
 	return false;
 
 });
+
+function changeMod () {
+
+	document.getElementById("mod_c").value = parseInt(document.getElementById("mod_a").value) % parseInt(document.getElementById("mod_b").value);
+
+}
+
+document.getElementById("mod_a").addEventListener("input", changeMod);
+document.getElementById("mod_b").addEventListener("input", changeMod);
 
 setupGrid();

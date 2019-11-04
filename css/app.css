@@ -89,3 +89,13 @@ body,
   background-color: currentColor;
   content: "";
 }
+#calculator {
+  margin-top: 75px;
+}
+#calculator > * {
+  width: 65px;
+}
+#calculator span {
+  margin-left: 7px;
+  margin-right: 7px;
+}
