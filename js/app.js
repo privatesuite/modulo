@@ -1,5 +1,5 @@
 let players = [];
-const gridSize = 19;
+const gridSize = 11;
 
 let ws;
 let room;
@@ -49,6 +49,13 @@ function isHexLight (color) {
 	const c_b = parseInt(hex.substr(4, 2), 16);
 	const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
 	return brightness > 155;
+
+}
+
+function updateTurn () {
+
+	if (document.querySelector(".playing")) document.querySelector(".playing").classList.remove("playing");
+	document.querySelector(`#player_list .owner-${turn === "me" ? username : turn}`).classList.add("playing");
 
 }
 
@@ -152,7 +159,7 @@ class Grid {
 
 	movePiece (x1, y1, x2, y2) {
 
-		if (!this._canMoveTo(x1, y1, x2, y2)) return;
+		if (!this._canMoveTo(x1, y1, x2, y2) || (x1 === x2 && y1 === y2)) return;
 
 		const piece = this.getPieceAt(x1, y1);
 
@@ -160,19 +167,21 @@ class Grid {
 
 			const toPiece = this.getPieceAt(x2, y2);
 
-			if (toPiece.value > 12 && toPiece.value <= piece.value) return;
+			if (toPiece.value <= 12 || toPiece.value >= piece.value) {
 
-			if (toPiece.value % piece.value && toPiece.value > 12) {
+				if (!(toPiece.value % piece.value) || (toPiece.value <= 12 && piece.value > toPiece.value)) {
 
-				toPiece.value = toPiece.value % piece.value;
-				this._placePiece(toPiece);
-				return;
+					this.removePiece(toPiece);
 
-			} else {
+				} else {
 
-				this.removePiece(toPiece);
-				
-			}
+					toPiece.value = toPiece.value % piece.value;
+					this._placePiece(toPiece);
+					return true;
+					
+				}
+
+			} else return;
 
 		}
 
@@ -310,6 +319,7 @@ document.getElementById("join_room").addEventListener("click", () => {
 				
 				players.push(username);
 				updatePlayers();
+				updateTurn();
 
 			}
 
@@ -376,6 +386,7 @@ document.getElementById("join_room").addEventListener("click", () => {
 		} else if (msg.type === "myTurn") {
 
 			turn = msg.player;
+			updateTurn();
 
 		} else if (msg.type === "movePiece") {
 
@@ -385,6 +396,7 @@ document.getElementById("join_room").addEventListener("click", () => {
 
 			turn = msg.who;
 			if (turn === username) turn = "me";
+			updateTurn();
 
 		}
 
@@ -411,6 +423,7 @@ document.getElementById("grid").addEventListener("contextmenu", event => {
 			selected = undefined;
 			turn = players[(players.indexOf(username) + 1) % players.length];
 			if (turn === username) turn = "me";
+			updateTurn();
 
 			send({
 

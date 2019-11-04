@@ -80,3 +80,12 @@ body,
   margin-top: 15px;
   margin-bottom: 15px;
 }
+#player_list p.playing:before {
+  display: inline-block;
+  margin-right: 7px;
+  border-radius: 100%;
+  width: 10px;
+  height: 10px;
+  background-color: currentColor;
+  content: "";
+}
