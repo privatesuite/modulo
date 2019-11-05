@@ -42,7 +42,7 @@ html, body, #app {
 
 #grid {
 
-	border: 1px solid @light_gray;
+	border: 1px solid var(--input__border_color);
 
 	font-size: 0;
 
@@ -62,12 +62,12 @@ html, body, #app {
 			width: 3vw;
 			height: 3vw;
 
-			max-width: 30px;
-			max-height: 30px;
+			max-width: 50px;
+			max-height: 50px;
 
 			&.even {
 
-				background-color: @light_gray;
+				background-color: var(--button__hover_background_color);
 	
 			}
 
@@ -151,6 +151,12 @@ html, body, #app {
 			background-color: currentColor;
 
 			content: "";
+
+		}
+
+		&.out {
+
+			text-decoration: line-through;
 
 		}
 

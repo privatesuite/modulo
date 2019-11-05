@@ -1,4 +1,5 @@
 let players = [];
+let playersOut = [];
 const gridSize = 11;
 
 let ws;
@@ -171,6 +172,13 @@ class Grid {
 
 				if (!(toPiece.value % piece.value) || (toPiece.value <= 12 && piece.value > toPiece.value)) {
 
+					if (toPiece.type === "cm") {
+
+						playersOut.push(toPiece.owner === "me" ? username : toPiece.owner);					
+						updatePlayers();
+
+					}
+
 					this.removePiece(toPiece);
 
 				} else {
@@ -234,15 +242,6 @@ function setupGrid () {
 
 function setupPieces () {
 
-	// let cmX = Math.floor(Math.random() * gridSize);
-	// let cmY = Math.floor(Math.random() * gridSize);
-
-	// if (cmX <= 2) cmX = 3;
-	// if (cmY <= 2) cmY = 3;
-
-	// if (cmX >= gridSize - 2) cmX = gridSize - 3;
-	// if (cmY >= gridSize - 2) cmY = gridSize - 3;
-
 	let cmX;
 	let cmY;
 
@@ -275,6 +274,18 @@ function setupPieces () {
 	grid.addPiece(new Piece(cmX + 1, cmY - 1, "p", generateRandomNumber(), "me"));
 	grid.addPiece(new Piece(cmX + 1, cmY + 1, "p", generateRandomNumber(), "me"));
 
+	grid.addPiece(new Piece(cmX + 1, cmY, "p", generateRandomNumber(), "me"));
+	grid.addPiece(new Piece(cmX - 1, cmY, "p", generateRandomNumber(), "me"));
+	grid.addPiece(new Piece(cmX, cmY + 1, "p", generateRandomNumber(), "me"));
+	grid.addPiece(new Piece(cmX, cmY - 1, "p", generateRandomNumber(), "me"));
+
+}
+
+function winner (who) {
+
+	document.getElementById("winner").style.display = "block";
+	document.getElementById("winner_text").innerText = `${who} has won it all!`;
+
 }
 
 function updatePlayers () {
@@ -284,7 +295,7 @@ function updatePlayers () {
 	for (const p of players) {
 
 		const pl = document.createElement("div");
-		pl.innerHTML = `<p class="owner-${p}">${p}</p>`;
+		pl.innerHTML = `<p class="owner-${p}${playersOut.indexOf(p) === -1 ? "" : " out"}">${p}</p>`;
 		document.getElementById("player_list").appendChild(pl);
 
 		if (p !== username) s += `.owner-${p} {background-color: ${colorFromString(p)};}\n.owner-${p}, .owner-${p}>* {${isHexLight(colorFromString(p)) ? `` : `color: white;`}}\n`
@@ -295,12 +306,12 @@ function updatePlayers () {
 
 }
 
-document.getElementById("join_room").addEventListener("click", () => {
+const login = () => {
 
 	room = document.getElementById("room").value;
 	username = document.getElementById("username").value;
 
-	if (room.length <= 3 || username.length <= 3) return;
+	if (room.length < 3 || username.length < 3) return;
 
 	ws = new WebSocket("wss://privatesuitemag.com:8080", room);
 
@@ -399,9 +410,19 @@ document.getElementById("join_room").addEventListener("click", () => {
 			if (turn === username) turn = "me";
 			updateTurn();
 
+		} else if (msg.type === "win") {
+
+			winner(msg.who);
+
 		}
 
 	}
+
+}
+document.getElementById("join_room").addEventListener("click", login);
+document.getElementById("join").addEventListener("keydown", event => {
+
+	if (event.key === "Enter") login();
 
 });
 
@@ -423,6 +444,28 @@ document.getElementById("grid").addEventListener("contextmenu", event => {
 
 			selected = undefined;
 			turn = players[(players.indexOf(username) + 1) % players.length];
+
+			let i = 0;
+			while (playersOut.indexOf(turn) !== -1 && i !== 10) {
+				
+				turn = players[(players.indexOf(username) + 1) % players.length];
+				i++;
+
+			}
+
+			if (i === 10 || players.length - playersOut.length === 1) {
+
+				winner(players.find(_ => playersOut.indexOf(_) === -1));
+				send({
+
+					type: "win",
+					who: players.find(_ => playersOut.indexOf(_) === -1)
+
+				})
+				return;
+
+			}
+
 			if (turn === username) turn = "me";
 			updateTurn();
 

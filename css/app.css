@@ -26,7 +26,7 @@ body,
   margin-top: 0;
 }
 #grid {
-  border: 1px solid #c7c7c7;
+  border: 1px solid var(--input__border_color);
   font-size: 0;
 }
 #grid > * {
@@ -39,11 +39,11 @@ body,
   min-height: 10px;
   width: 3vw;
   height: 3vw;
-  max-width: 30px;
-  max-height: 30px;
+  max-width: 50px;
+  max-height: 50px;
 }
 #grid > * > *.even {
-  background-color: #c7c7c7;
+  background-color: var(--button__hover_background_color);
 }
 #grid > * > * > * {
   position: absolute;
@@ -88,6 +88,9 @@ body,
   height: 10px;
   background-color: currentColor;
   content: "";
+}
+#player_list p.out {
+  text-decoration: line-through;
 }
 #calculator {
   margin-top: 75px;
