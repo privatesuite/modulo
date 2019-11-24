@@ -1,6 +1,6 @@
 let players = [];
 let playersOut = [];
-const gridSize = 11;
+const gridSize = 9;
 
 let ws;
 let room;
@@ -104,13 +104,26 @@ class Grid {
 
 		document.querySelector(`*[data-x='${piece.x}'][data-y='${piece.y}']`).appendChild(el);
 
-		if (piece.owner === "me") el.addEventListener("click", event => {
+		if (piece.owner === "me") {
 
-			if (document.querySelector(".selected")) document.querySelector(".selected").classList.remove("selected");
-			selected = piece;
-			el.classList.add("selected");
+			el.addEventListener("click", event => {
 
-		});
+				if (document.querySelector(".selected")) document.querySelector(".selected").classList.remove("selected");
+				selected = piece;
+				el.classList.add("selected");
+				document.getElementById("mod_b").value = piece.value;
+				changeMod();
+	
+			});
+
+			el.addEventListener("mouseover", event => {
+
+				document.getElementById("mod_a").value = piece.value;
+				changeMod();
+	
+			});
+
+		}
 
 		return el;
 
@@ -306,10 +319,11 @@ function updatePlayers () {
 
 }
 
-const login = () => {
+const login = spectating => {
 
-	room = document.getElementById("room").value;
-	username = document.getElementById("username").value;
+	room = document.getElementById(spectating ? "spectate_room_name" : "room").value;
+	if (!spectating) username = document.getElementById("username").value;
+	else username = Math.random().toString(36);
 
 	if (room.length < 3 || username.length < 3) return;
 
@@ -321,23 +335,28 @@ const login = () => {
 
 		send({
 
-			type: "hi"
+			type: "hi",
+			spectating: !!spectating
 
 		});
 
-		setTimeout(() => {
+		if (!spectating) {
 
-			if (players.length === 0) {
-				
-				players.push(username);
-				updatePlayers();
-				updateTurn();
+			setTimeout(() => {
 
-			}
+				if (players.length === 0) {
+					
+					players.push(username);
+					updatePlayers();
+					updateTurn();
 
-			setupPieces();
-	
-		}, 250);
+				}
+
+				setupPieces();
+		
+			}, 250);
+
+		}
 
 	}
 
@@ -347,8 +366,13 @@ const login = () => {
 
 		if (msg.type === "hi") {
 
-			players.push(msg.player);
-			updatePlayers();
+			if (!msg.spectating) {
+			
+				players.push(msg.player);
+				updatePlayers();
+
+			}
+
 			send({
 
 				type: "players",
@@ -419,7 +443,9 @@ const login = () => {
 	}
 
 }
+
 document.getElementById("join_room").addEventListener("click", login);
+document.getElementById("spectate_room").addEventListener("click", () => login(true));
 document.getElementById("join").addEventListener("keydown", event => {
 
 	if (event.key === "Enter") login();
@@ -487,7 +513,20 @@ document.getElementById("grid").addEventListener("contextmenu", event => {
 
 function changeMod () {
 
-	document.getElementById("mod_c").value = parseInt(document.getElementById("mod_a").value) % parseInt(document.getElementById("mod_b").value);
+	try {
+
+		document.getElementById("mod_c").value = parseInt(document.getElementById("mod_a").value) % parseInt(document.getElementById("mod_b").value);
+		if (document.getElementById("mod_c").value === "NaN") {
+
+			document.getElementById("mod_c").value = "";
+
+		}
+
+	} catch (e) {
+
+		document.getElementById("mod_c").value = "";
+
+	}
 
 }
 
